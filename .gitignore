@@ -1,0 +1,4 @@
+/relay/.chalice/deployments/
+/relay/.chalice/venv/
+relay/.chalice/deployed
+__pycache__

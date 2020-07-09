@@ -2,8 +2,7 @@
 import json
 import os
 import subprocess
-from pprint import pprint
-
+from urllib.parse import urlparse
 
 REGIONS = {
     "af-south-1": "Cape Town (Africa)",
@@ -70,8 +69,20 @@ def run(regions):
             # raise Exception("Unexpected error")
 
     if urls:
-        print("FINISHED LIST OF URLS...\n")
+        print("\nFINISHED LIST OF URLS...(in JSON)\n")
         print(json.dumps(urls, indent=4))
+        print("\n")
+        print("FINISHED LIST OF URLS...(in PYTHON)\n")
+        print("[")
+        for i, url in enumerate(urls):
+            if i + 1 == len(urls):
+                comma = ""
+            else:
+                comma = ","
+            region = urlparse(url).netloc.split(".")[-3]
+            name = REGIONS[region]
+            print(f'    "{url}"{comma}  # {name}')
+        print("]")
         print("")
     else:
         raise Exception("No URLs found")

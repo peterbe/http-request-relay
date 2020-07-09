@@ -82,6 +82,7 @@ def index():
 
     body = None
     error = None
+    response_data = None
     attempts = 0
     try:
         t0 = time.perf_counter()
@@ -96,6 +97,13 @@ def index():
                 body = response.json()
             else:
                 body = base64.b64encode(response.content).decode("utf-8")
+
+        response_data = {
+            "status_code": response.status_code,
+            "headers": dict(response.headers),
+            "body": body,
+            "elapsed": response.elapsed.total_seconds(),
+        }
     except Exception as exc:
         t1 = time.perf_counter()
         f = io.StringIO()
@@ -111,7 +119,6 @@ def index():
             "took": t1 - t0,
             "attempts": attempts,
             "nobody": bool(request_data.get("nobody")),
-            "elapsed": response.elapsed.total_seconds(),
         },
         "error": error,
         "request": {
@@ -120,9 +127,5 @@ def index():
             "timeout": request_timeout,
             "method": request_method,
         },
-        "response": {
-            "status_code": response.status_code,
-            "headers": dict(response.headers),
-            "body": body,
-        },
+        "response": response_data,
     }

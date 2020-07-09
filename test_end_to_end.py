@@ -15,7 +15,7 @@ def test_get_happy_path():
     assert data["meta"]["attempts"] == 1
     assert data["meta"]["nobody"] is False
     assert data["meta"]["took"]
-    assert data["meta"]["elapsed"]
+    assert data["response"]["elapsed"]
     assert data["request"]["headers"] == {}
     assert data["request"]["url"] == url
     assert data["request"]["method"] == "get"
@@ -33,7 +33,7 @@ def test_head_happy_path():
     assert data["meta"]["attempts"] == 1
     assert data["meta"]["nobody"] is False
     assert data["meta"]["took"]
-    assert data["meta"]["elapsed"]
+    assert data["response"]["elapsed"]
     assert data["request"]["headers"] == {}
     assert data["request"]["url"] == url
     assert data["request"]["method"] == "head"
@@ -115,3 +115,14 @@ def iget(map, key, default=None):
         if k.lower() == key.lower():
             return map[k]
     return default
+
+
+def test_bad_domain():
+    url = "https://xxx.peterbe.com/whatever"
+    r = requests.get(CHALICE_URL + "?" + urlencode({"url": url}))
+    assert r.status_code == 200
+    data = r.json()
+    assert not data["response"]
+    assert data["error"]
+    assert data["error"]["type"] == "ConnectionError"
+    assert "xxx.peterbe.com" in data["error"]["value"]

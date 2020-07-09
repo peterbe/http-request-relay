@@ -82,10 +82,11 @@ def index():
 
     body = None
     error = None
+    attempts = 0
     try:
         t0 = time.perf_counter()
         response = method(request_url, headers=request_headers, timeout=request_timeout)
-        attempts = 1
+        attempts += 1
         t1 = time.perf_counter()
 
         if not request_data.get("nobody") and request_method != "head":
@@ -96,6 +97,7 @@ def index():
             else:
                 body = base64.b64encode(response.content).decode("utf-8")
     except Exception as exc:
+        t1 = time.perf_counter()
         f = io.StringIO()
         traceback.print_exc(file=f)
         error = {

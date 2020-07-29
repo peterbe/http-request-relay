@@ -74,14 +74,10 @@ def run(regions):
         print("\n")
         print("FINISHED LIST OF URLS...(in PYTHON)\n")
         print("[")
-        for i, url in enumerate(urls):
-            if i + 1 == len(urls):
-                comma = ""
-            else:
-                comma = ","
+        for url in urls:
             region = urlparse(url).netloc.split(".")[-3]
             name = REGIONS[region]
-            print(f'    "{url}"{comma}  # {name}')
+            print(f'    "{url}",  # {name}')
         print("]")
         print("")
     else:
